@@ -31,43 +31,33 @@ app.post("/people", (req, res) => {
 
   people.push(req.body); // Añadimos un nuevo elemento al array
 
-  res.json(req.body); // Le respondemos al cliente el objeto añadido
+  res.send("Los datos han sido actualizados exitosamente"); // Le respondemos al cliente que sus datos se han actualizado
 });
 
 app.put("/people/:index", (req, res) => {
-  /* COMPLETA EL CÓDIGO NECESARIO:
-     Para que se pueda actualizar el objeto asociado al índice indicado en la URL 
-   */
-     const index = req.params.index;
+  const index = req.params.index;
 
-     if (index < 0 || index >= people.length) {
-       return res.status(404).json({ error: "Índice no válido" });
-     }
-   
-     const updatedPerson = req.body; // Los nuevos datos que se proporcionan en la solicitud
-   
-     people[index] = updatedPerson; // Actualizamos el objeto en el índice especificado
-   
-     res.json(updatedPerson); // Respondemos con el objeto actualizado
-
-
+  // Actualiza el objeto si el índice es válido
+  if (index >= 0 && index < people.length) {
+    people[index] = req.body;
+    res.json(people[index]);
+  } else {
+    res.status(404).send("Índice no válido");
+  }
 });
 
 app.delete("/people/:index", (req, res) => {
-  /* COMPLETA EL CÓDIGO NECESARIO:
-     Para que se pueda eliminar el objeto asociado al índice indicado en la URL 
-   */
+  const index = req.params.index;
 
-     const index = req.params.index;
-
-  if (index < 0 || index >= people.length) {
-    return res.status(404).json({ error: "Índice no válido" });
+  // Elimina el objeto si el índice es válido
+  if (index >= 0 && index < people.length) {
+    const deletedPerson = people.splice(index, 1);
+    res.send("Los datos han sido eliminados exitosamente");
+  } else {
+    res.status(404).send("Índice no válido");
   }
-
-  const deletedPerson = people.splice(index, 1); // Eliminamos el objeto en el índice especificado
-
-  res.json(deletedPerson[0]); // Respondemos con el objeto eliminado
 });
+
 
 // Esta línea inicia el servidor para que escuche peticiones en el puerto indicado
 app.listen(port, () => {
